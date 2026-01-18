@@ -10,15 +10,7 @@ const Greeting = () => {
   const newGreetingInputRef = useRef<HTMLInputElement>(null);
 
   const onSetGreetingSuccess = () => {
-    toast.success(`Successfully set your new greeting`, {
-      position: "bottom-center",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      theme: "light",
-      className: "text-sm",
-    });
+    toast.success("greeting updated");
     setNewGreeting("");
     newGreetingInputRef.current?.blur();
   };
@@ -44,38 +36,60 @@ const Greeting = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col space-y-4">
-        <p className="text-sm text-gray-500 text-center">
-          Greeting from the blockchain:
-        </p>
+      {/* Current Greeting Card */}
+      <div className="p-6 border border-border bg-card/50">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">
+            current greeting
+          </span>
+        </div>
         {getGreetingLoading ? (
-          <p className="text-lg text-center text-gray-500 italic">Loading...</p>
+          <div className="text-muted-foreground animate-pulse">loading...</div>
+        ) : getGreetingError ? (
+          <div className="text-destructive text-sm">
+            failed to fetch greeting
+          </div>
         ) : (
-          <p
-            className={
-              !getGreetingError
-                ? `text-lg text-center`
-                : `text-lg text-center text-red-500`
-            }
-          >
-            {!getGreetingError
-              ? greeting
-              : `There was an error getting the greeting`}
-          </p>
+          <div className="text-2xl md:text-3xl font-medium text-foreground wrap-break-word">
+            {greeting || <span className="text-muted-foreground">—</span>}
+          </div>
         )}
       </div>
-      <div className="space-y-8">
-        <div className="flex flex-col space-y-4">
-          <input
-            className="border p-4 text-center"
-            onChange={(e) => setNewGreeting(e.target.value)}
-            placeholder="Write a new greeting"
-            ref={newGreetingInputRef}
-            disabled={!address}
-            value={newGreeting}
-          />
+
+      {/* Set Greeting Card */}
+      <div className="p-6 border border-border bg-card/50">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">
+            update greeting
+          </span>
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <input
+              className="w-full bg-background border border-border px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              onChange={(e) => setNewGreeting(e.target.value)}
+              placeholder={
+                address ? "enter new greeting..." : "connect wallet first"
+              }
+              ref={newGreetingInputRef}
+              disabled={!address}
+              value={newGreeting}
+            />
+            {!address && openConnectModal && (
+              <button
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                onClick={openConnectModal}
+              >
+                connect wallet to continue →
+              </button>
+            )}
+          </div>
+
           <button
-            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-4 px-8 rounded-md"
+            className="w-full bg-primary text-black font-medium px-4 py-3 hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-primary"
             onClick={setGreeting}
             disabled={
               !address ||
@@ -84,32 +98,28 @@ const Greeting = () => {
               prepareSetGreetingError
             }
           >
-            {!setGreetingLoading
-              ? `Set your new greeting on the blockchain`
-              : `Setting greeting...`}
+            {setGreetingLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+                broadcasting transaction...
+              </span>
+            ) : (
+              "submit"
+            )}
           </button>
-          {!address && (
-            <button
-              className="text-sm text-gray-500 text-center underline hover:opacity-80"
-              onClick={openConnectModal}
-            >
-              Connect your wallet to set a new greeting
-            </button>
-          )}
-          {address && !newGreeting && (
-            <p className="text-sm text-gray-500 text-center">
-              Type something to set a new greeting
-            </p>
-          )}
+
+          {/* Error States */}
           {setGreetingError && (
-            <p className="text-sm text-red-500 text-center">
-              There was an error setting your new greeting
-            </p>
+            <div className="flex items-center gap-2 text-sm text-destructive">
+              <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
+              transaction failed
+            </div>
           )}
           {newGreeting && prepareSetGreetingError && (
-            <p className="text-sm text-red-500 text-center">
-              Sorry, only the contract owner can set a greeting
-            </p>
+            <div className="flex items-center gap-2 text-sm text-destructive">
+              <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
+              only contract owner can set greeting
+            </div>
           )}
         </div>
       </div>
