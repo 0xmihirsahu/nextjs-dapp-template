@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useGreeting } from "../hooks/useGreeting";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const Greeting = () => {
   const [newGreeting, setNewGreeting] = useState<string>("");

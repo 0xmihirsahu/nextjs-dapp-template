@@ -1,11 +1,10 @@
 import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import "react-toastify/dist/ReactToastify.css";
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "sonner";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -30,12 +29,17 @@ export default function RootLayout({
           <Header />
           {children}
         </Providers>
-        <ToastContainer
+        <Toaster
           position="bottom-center"
-          autoClose={3000}
-          hideProgressBar
-          theme="dark"
-          toastClassName="!bg-card !text-foreground !border !border-border !font-mono !text-sm"
+          toastOptions={{
+            style: {
+              background: "hsl(var(--card))",
+              color: "hsl(var(--foreground))",
+              border: "1px solid hsl(var(--border))",
+              fontFamily: "var(--font-mono), ui-monospace, monospace",
+              fontSize: "14px",
+            },
+          }}
         />
       </body>
     </html>
