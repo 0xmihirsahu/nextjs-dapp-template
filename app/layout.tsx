@@ -2,20 +2,20 @@ import "./globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import "react-toastify/dist/ReactToastify.css";
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
 import { ToastContainer } from "react-toastify";
-import { cn } from "@/lib/utils";
 
-const fontSans = FontSans({
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-mono",
+  weight: ["400", "500", "600"],
 });
+
 export const metadata: Metadata = {
-  title: "Solidity Next.js Starter",
-  description:
-    "A starter kit for building full stack Ethereum dApps with Solidity and Next.js",
+  title: "web3 starter",
+  description: "ethereum dapp starter with solidity and next.js",
 };
 
 export default function RootLayout({
@@ -24,18 +24,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
-      >
+    <html suppressHydrationWarning lang="en">
+      <body className={`min-h-screen bg-background font-mono ${mono.variable}`}>
         <Providers>
           <Header />
           {children}
         </Providers>
-        <ToastContainer />
+        <ToastContainer
+          position="bottom-center"
+          autoClose={3000}
+          hideProgressBar
+          theme="dark"
+          toastClassName="!bg-card !text-foreground !border !border-border !font-mono !text-sm"
+        />
       </body>
     </html>
   );

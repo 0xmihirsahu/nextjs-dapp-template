@@ -1,32 +1,14 @@
 import type { Config } from "tailwindcss";
-import defaultTheme from "tailwindcss/defaultTheme";
-import colors from "tailwindcss/colors";
-
-// Helper function to flatten the color palette
-function flattenColorPalette(colors: Record<string, any>) {
-  return Object.assign(
-    {},
-    ...Object.entries(colors).flatMap(([color, values]) => {
-      if (typeof values !== "object") {
-        return { [color]: values };
-      }
-
-      return Object.entries(values).map(([key, value]) => {
-        return { [`${color}-${key}`]: value };
-      });
-    }),
-  );
-}
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -37,7 +19,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)", ...defaultTheme.fontFamily.sans],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -95,18 +77,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), addVariablesForColors],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;
 
 export default config;
-
-function addVariablesForColors({ addBase, theme }: any) {
-  const flattenedColors = flattenColorPalette(theme("colors"));
-  const newVars = Object.fromEntries(
-    Object.entries(flattenedColors).map(([key, val]) => [`--${key}`, val]),
-  );
-
-  addBase({
-    ":root": newVars,
-  });
-}
